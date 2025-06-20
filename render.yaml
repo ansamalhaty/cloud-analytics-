@@ -1,13 +1,31 @@
-envVars:
-  - key: DB_CONNECTION
-    value: pgsql  # ← تغيير من mysql إلى pgsql
-  - key: DB_HOST
-    value: dpg-xxxxxx-a.oregon-postgres.render.com  # ← Host من Render
-  - key: DB_PORT
-    value: 5432  # ← Port الافتراضي لـ PostgreSQL
-  - key: DB_DATABASE
-    value: mydb_iy93
-  - key: DB_USERNAME
-    value: mydb_iy93_user
-  - key: DB_PASSWORD
-    value: 6guShsMTugTvwlJ0eLNuJo50IGt2wnXY
+
+  services:
+  - type: web
+    name: your-app-name  # ⬅️ غيّري "your-app-name" لاسم مشروعك
+    env: php
+    plan: free
+    buildCommand: |
+      composer install
+      php artisan key:generate
+      php artisan optimize
+    startCommand: /opt/render/project/src/vendor/bin/heroku-php-apache2 public/
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+     
+      - key: DB_CONNECTION
+        value: pgsql  
+      - key: DB_HOST
+        value: your-db-host-from-render
+      - key: DB_PORT
+        value: 5432  
+      - key: DB_DATABASE
+        value: mydb_iy93
+      - key: mydb_iy93_user
+        value: your-db-user
+      - key: DB_PASSWORD
+        value: 6guShsMTugTvwlJ0eLNuJo50IGt2wnXY
