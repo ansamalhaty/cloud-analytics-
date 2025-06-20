@@ -1,5 +1,6 @@
 
-  services:
+
+  - services:
   - type: web
     name: your-app-name  # ⬅️ غيّري "your-app-name" لاسم مشروعك
     env: php
@@ -16,16 +17,16 @@
         value: false
       - key: APP_KEY
         generateValue: true
-     
+      
       - key: DB_CONNECTION
-        value: pgsql  
+        value: pgsql  # أو mysql إذا تستخدمينه
       - key: DB_HOST
         value: your-db-host-from-render
       - key: DB_PORT
-        value: 5432  
+        value: 5432  # 3306 لـ MySQL
       - key: DB_DATABASE
         value: mydb_iy93
-      - key: mydb_iy93_user
-        value: your-db-user
+      - key: DB_USERNAME
+        value: mydb_iy93_user
       - key: DB_PASSWORD
         value: 6guShsMTugTvwlJ0eLNuJo50IGt2wnXY
