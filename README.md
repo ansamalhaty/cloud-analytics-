@@ -1,97 +1,68 @@
+#  Cloud Document Manager (Laravel)
 
- **تقرير مشروع نظم الحوسبة السحابية - نظام إدارة المستندات**
-
-المساق: SICT 4313 - نظم الحوسبة السحابية والموزعة  
-المدرس: د. ربحي بركة  
-الجامعة الإسلامية - غزة  
-السنة: 2025
+A cloud-based system to **upload, verify, and filter** PDF/DOCX documents — built with Laravel + MySQL and hosted on Render.
 
 ---
 
-##  ملخص المشروع:
+##  Technologies Used
 
-قمت بتطوير نظام سحابي بلغة PHP باستخدام Laravel يتيح للمستخدمين رفع مستندات بصيغتي PDF و DOCX، والتحقق من وجود الملف سابقاً، وتصفية الملفات حسب النوع، مع استخدام تقنية التخزين السحابي عبر **Firebase** لحفظ الملفات.
-
----
-
-##  فكرة المشروع:
-
-الفكرة هي تمكين المستخدم من:
-- رفع الملفات بطريقة منظمة
-- منع التكرار عبر التحقق من تجزئة الملف (Hash)
-- تصفية الملفات حسب النوع (PDF أو DOCX)
-- استرجاع الملفات المعروضة بشكل واضح وسريع
-- الاستفادة من التخزين السحابي عبر Firebase
+- **Backend:** PHP, Laravel 10
+- **Frontend:** Laravel Blade (HTML/CSS/JS)
+- **Cloud:** Render (Web Service + PostgreSQL/MySQL)
+- **Storage:** Render ephemeral storage (temporary)
 
 ---
 
-##  ما الذي استخدمته:
+## Deployment to Render
 
-- **الواجهة:** Blade Template داخل Laravel باستخدام HTML + CSS
-- **المنطق البرمجي:** Laravel Controller
-- **قاعدة البيانات:** Laravel Migration باستخدام MySQL
-- **تخزين الملفات:** تم استخدام التخزين المحلي أولاً، ثم تم رفع الملفات إلى Firebase Cloud Storage
-- **المسارات:** تم تنظيم كل شيء داخل web.php و DocumentController
+### 1.  Prerequisites
 
----
-
-##  الوظائف الأساسية:
-
-###  1. التحقق من الملف:
-عند اختيار المستخدم لملف، يتم حساب الـ SHA-256 Hash ومقارنته مع قاعدة البيانات لمعرفة إذا كان موجود مسبقاً.
-
-```php
-$fileHash = hash_file('sha256', $file->getRealPath());
-$existingFile = Document::where('file_hash', $fileHash)->first();
-```
-
-###  2. رفع الملف:
-إذا لم يكن الملف موجود، يتم حفظه مباشرة في التخزين باستخدام:
-
-```php
-'path' => $file->store('documents'),
-```
-
-###  3. تصفية الملفات حسب النوع:
-يختار المستخدم بين PDF أو DOCX، والنظام يعرض الملفات المرتبة من الأحدث إلى الأقدم.
-
-```php
-$filterResults = Document::where('file_type', $selectedType)
-                         ->orderBy('created_at', 'desc')->get();
-```
+- Render account (sign up at https://render.com/)
+- MySQL database (local or cloud)
+- PHP 8.2+ & Composer installed
 
 ---
 
-##  تنظيم الكود:
-
-- **routes/web.php**: يحتوي على 4 مسارات رئيسية (الرئيسية، رفع، تحقق، تصفية)
-- **DocumentController.php**: يحتوي على كل المنطق البرمجي
-- **welcome.blade.php**: يحتوي على الواجهة بتصميم RTL مرتب وجذاب
-
----
-
-##  النشر السحابي:
-
-قمت باستخدام **Firebase Hosting + Firebase Storage** لنشر الواجهة وتخزين الملفات.  
-تم ربط المشروع عن طريق Firebase CLI وتنفيذه بالأوامر التالية:
+### 2.  Deploy to Render
 
 ```bash
-firebase init
-firebase deploy
-```
+# Clone repository
+git clone https://github.com/ansamalhaty/cloud-analytics-
 
----
+# Install dependencies
+composer install
 
-## ماذا تعلمت:
+# Configure .env (MySQL + Render settings)
+cp .env.example .env
+nano .env  # Edit DB and storage configs
 
-- كيفية التعامل مع ملفات المستخدم في Laravel
-- استخدام التجزئة لمنع التكرار
-- تخزين الملفات في السحابة (Firebase)
-- تنظيم المشروع بطريقة MVC احترافية
-- التأكد من التحقق والتصفية بطريقة آمنة
+# Migrate database
+php artisan migrate
 
--
+ # Features
+ Upload .pdf or .docx documents
 
-## ختاماً:
+Verify duplicates via SHA-256 hash
 
-تعلمت من خلاله ربط Laravel بالسحابة وتحقيق وظائف عملية مهمة مثل رفع وتحليل الملفات بشكل آمن واحترافي.
+Filter documents by type (PDF/DOCX)
+
+# API Endpoints
+Method  	Endpoint	       Description
+POST	    /upload	Upload     document (max 5MB)
+GET	        /filter/{type}	   Filter by type (pdf/docx)
+
+
+# Challenges and Solutions :
+
+Firebase Limitations: Switched to Render after authentication and latency issues.
+
+Composer Conflicts: Resolved through manual package adjustments.
+
+Recommendations for Future Work :
+
+Integrate AWS S3 for persistent file storage.
+
+Optimize Render’s PostgreSQL performance for larger datasets.
+ 
+ ** Thanks for writing **  
+
